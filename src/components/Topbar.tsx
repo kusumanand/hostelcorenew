@@ -25,7 +25,7 @@ export default function Topbar({ title = "Dashboard" }: { title?: string }) {
         onClick={toggleCollapsed}
         className="text-slate-500 dark:text-slate-300 hover:text-gold-dark dark:hover:text-gold transition-colors"
         aria-label="Toggle sidebar"
-      >Menu
+      >
         <Menu size={20} />
       </button>
 

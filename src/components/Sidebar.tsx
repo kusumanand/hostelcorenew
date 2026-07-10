@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronsLeft, ChevronsRight, ShieldCheck } from "lucide-react";
+import {  ShieldCheck } from "lucide-react";
 import { navItems } from "@/lib/nav-items";
 import { useSidebar } from "@/lib/sidebar-context";
 
@@ -81,7 +81,7 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="text-white text-[13px] font-medium truncate">Warden</p>
+              <p className="text-white text-[13px] font-medium truncate">Super Admin</p>
               <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
                 Online

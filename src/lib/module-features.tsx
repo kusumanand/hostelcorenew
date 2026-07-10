@@ -162,24 +162,6 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
       { name: "Guest Tracking", description: "Track overnight guests and duration of stay." },
     ],
   },
-  complaints: {
-    slug: "complaints",
-    title: "Complaints & HelpDesk",
-    description:
-      "Raise, escalate and resolve complaints with SLA-backed accountability.",
-    features: [
-      { name: "Complaint Ticket", description: "Raise tickets categorised by issue type." },
-      { name: "Photo Upload", description: "Allow residents to attach photos while submitting complaints." },
-      { name: "Voice Complaint", description: "Enable residents to raise complaints using voice recordings." },
-      { name: "Escalation", description: "Auto-escalate unresolved tickets up the chain." },
-      { name: "Ticket Priority", description: "Assign and manage complaint priority based on urgency and impact." },
-      { name: "Resolution Tracking", description: "Track status from open to resolved." },
-      { name: "Feedback", description: "Collect resident satisfaction ratings post-resolution." },
-      { name: "Service Requests", description: "Handle non-complaint requests like repairs." },
-      { name: "SLA Monitoring", description: "Monitor response and resolution time targets." },
-      { name: "AI Resolution Suggestions", description: "AI-suggested fixes based on past similar tickets." },
-    ],
-  },
   mess: {
     slug: "mess",
     title: "Mess Management",
@@ -237,7 +219,7 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
       "Help residents study, learn and stay engaged outside the classroom.",
     features: [
       { name: "Study Room Booking", description: "Reserve quiet study rooms by time slot." },
-      { name: "Library Integration", description: "Browse and issue books from the hostel library." },
+      { name: "Hostel Library   ", description: "Browse and issue books from the hostel library." },
       { name: "Online Learning Portal", description: "Access curated learning resources in-app." },
       { name: "Assignment Sharing", description: "Share and submit assignments digitally." },
       { name: "Event Management", description: "Organise and RSVP to hostel events." },
@@ -250,23 +232,10 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
     description:
       "Keep parents informed with live updates — no phone calls needed.",
     features: [
-      { name: "Parent App", description: "Dedicated app for parents to track their ward." },
       { name: "Live Attendance Tracking", description: "Real-time attendance visibility for parents." },
       { name: "Live Fee Status", description: "Parents see dues and payment history instantly." },
       { name: "Approval Requests", description: "Parents approve outings, leave and guest visits." },
       { name: "Monthly Reports", description: "Automated monthly summary reports for parents." },
-    ],
-  },
-  transport: {
-    slug: "transport",
-    title: "Transport Management",
-    description: "Manage hostel transport fleets, routes and billing.",
-    features: [
-      { name: "GPS Tracking", description: "Live GPS location of every hostel vehicle." },
-      { name: "Route Management", description: "Plan and optimise pickup/drop routes." },
-      { name: "Pickup Verification", description: "Verify resident pickup with OTP or QR." },
-      { name: "Vehicle Monitoring", description: "Track vehicle health, fuel and documents." },
-      { name: "Transport Billing", description: "Generate transport fee invoices per route." },
     ],
   },
   "whatsapp-automation": {
@@ -280,18 +249,6 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
       { name: "Complaint Update", description: "Send ticket status updates automatically." },
       { name: "AI Chatbot", description: "Handle common queries with an AI WhatsApp bot." },
       { name: "Broadcast Notifications", description: "Send announcements to all residents at once." },
-    ],
-  },
-  "mobile-apps": {
-    slug: "mobile-apps",
-    title: "Mobile Apps",
-    description: "Purpose-built apps for every stakeholder in the hostel.",
-    features: [
-      { name: "Student App", description: "Resident-facing app for fees, mess and complaints." },
-      { name: "Parent App", description: "Real-time visibility for parents on the go." },
-      { name: "Warden App", description: "Operational tools for daily warden duties." },
-      { name: "Owner App", description: "High-level oversight and analytics for owners." },
-      { name: "Staff App", description: "Task and attendance app for hostel staff." },
     ],
   },
   "ai-modules": {
@@ -347,6 +304,24 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
       { name:"Device Login History", description:"Track login history across all registered user devices."},
       { name:"IP Tracking", description:"Monitor login IP addresses and detect suspicious access attempts."},
       { name:"Two-Factor Authentication", description:"Secure user accounts with OTP-based two-factor authentication."},
+    ],
+  },
+   complaints: {
+    slug: "complaints",
+    title: "Complaints & HelpDesk",
+    description:
+      "Raise, escalate and resolve complaints with SLA-backed accountability.",
+    features: [
+      { name: "Complaint Ticket", description: "Raise tickets categorised by issue type." },
+      { name: "Photo Upload", description: "Allow residents to attach photos while submitting complaints." },
+      { name: "Voice Complaint", description: "Enable residents to raise complaints using voice recordings." },
+      { name: "Escalation", description: "Auto-escalate unresolved tickets up the chain." },
+      { name: "Ticket Priority", description: "Assign and manage complaint priority based on urgency and impact." },
+      { name: "Resolution Tracking", description: "Track status from open to resolved." },
+      { name: "Feedback", description: "Collect resident satisfaction ratings post-resolution." },
+      { name: "Service Requests", description: "Handle non-complaint requests like repairs." },
+      { name: "SLA Monitoring", description: "Monitor response and resolution time targets." },
+      { name: "AI Resolution Suggestions", description: "AI-suggested fixes based on past similar tickets." },
     ],
   },
 };

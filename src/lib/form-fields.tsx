@@ -887,7 +887,7 @@ const featureFormFields: Record<string, FormField[]> = {
     { name: "timeSlot", label: "Time Slot", type: "select", options: ["9-11 AM", "11 AM-1 PM", "2-4 PM", "4-6 PM", "6-8 PM"] },
     { name: "purpose", label: "Purpose", type: "text", required: false },
   ],
-  "student-productivity::Library Integration": [
+  "student-productivity::Hostel Library": [
     { name: "residentName", label: "Resident Name", type: "text" },
     { name: "bookTitle", label: "Book Title", type: "text" },
     { name: "serial no.", label: "Serial no.", type: "text", required: false },
@@ -919,32 +919,6 @@ const featureFormFields: Record<string, FormField[]> = {
     { name: "reportMonth", label: "Report Month", type: "text", placeholder: "e.g. June 2026" },
     { name: "include", label: "Include", type: "select", options: ["Attendance", "Fees", "Academics", "All"] },
     { name: "deliveryMethod", label: "Delivery Method", type: "select", options: ["Email", "WhatsApp", "In-App"] },
-  ],
-  "transport::Route Management": [
-    { name: "routeName", label: "Route Name", type: "text" },
-    { name: "startPoint", label: "Start Point", type: "text" },
-    { name: "endPoint", label: "End Point", type: "text" },
-    { name: "stops", label: "Stops", type: "textarea", required: false, span: 2 },
-    { name: "vehicleAssigned", label: "Vehicle Assigned", type: "text", required: false },
-  ],
-  "transport::Pickup Verification": [
-    { name: "residentName", label: "Resident Name", type: "text" },
-    { name: "routeName", label: "Route Name", type: "text" },
-    { name: "verificationMethod", label: "Verification Method", type: "select", options: ["OTP", "QR Code"] },
-    { name: "pickupTime", label: "Pickup Time", type: "datetime-local" },
-  ],
-  "transport::Vehicle Monitoring": [
-    { name: "vehicleNumber", label: "Vehicle Number", type: "text" },
-    { name: "driverName", label: "Driver Name", type: "text" },
-    { name: "fuelLevel", label: "Fuel Level (%)", type: "number", required: false },
-    { name: "lastServiced", label: "Last Serviced", type: "date", required: false },
-    { name: "documentsValidTill", label: "Documents Valid Till", type: "date", required: false },
-  ],
-  "transport::Transport Billing": [
-    { name: "residentName", label: "Resident Name", type: "text" },
-    { name: "routeName", label: "Route Name", type: "text" },
-    { name: "billingPeriod", label: "Billing Period", type: "select", options: ["Monthly", "Quarterly"] },
-    { name: "amount", label: "Amount (₹)", type: "number" },
   ],
    "enterprise-saas::Multi Language": [
     { name: "defaultLanguage", label: "Default Language", type: "select", options: ["English", "Hindi", "Regional Language"] },
