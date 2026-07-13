@@ -14,13 +14,12 @@ import {
   HeartPulse,
   BookOpenCheck,
   Smile,
-  Bus,
   MessageCircle,
-  Smartphone,
   Sparkles,
   Building2,
   Cloud,
   type LucideIcon,
+  GraduationCap,
 } from "lucide-react";
 
 export interface NavItem {
@@ -44,10 +43,10 @@ export const navItems: NavItem[] = [
   { label: "Health & Wellness", href: "/health-wellness", icon: HeartPulse },
   { label: "Student Productivity", href: "/student-productivity", icon: BookOpenCheck },
   { label: "Parent Engagement", href: "/parent-engagement", icon: Smile },
-  { label: "Security", href:"/security", icon: Shield },
-  { label: "Whatsapp Automation", href: "/whatsapp-automation", icon: MessageCircle,  },
-  { label: "AI Modules", href: "/ai-modules", icon: Sparkles,},
+  { label: "Security", href: "/security", icon: Shield },
+  { label: "Whatsapp Automation", href: "/whatsapp-automation", icon: MessageCircle },
+  { label: "AI Modules", href: "/ai-modules", icon: Sparkles },
   { label: "Multi Branch & Franchise", href: "/multi-branch", icon: Building2 },
   { label: "Enterprise & SaaS Features", href: "/enterprise-saas", icon: Cloud },
-  { label: "Complaints & HelpDesk", href: "/complaints", icon: MessageSquareWarning,  },
+  { label: "Complaints & HelpDesk", href: "/complaints", icon: MessageSquareWarning },
 ];

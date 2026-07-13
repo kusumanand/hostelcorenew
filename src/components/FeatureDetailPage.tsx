@@ -5,6 +5,10 @@ import Link from "next/link";
 import {
   ChevronRight,
   CircleDot,
+  Info,
+  ListChecks,
+  Settings2,
+
 } from "lucide-react";
 import Topbar from "@/components/Topbar";
 import FeatureRecordsTable from "@/components/FeatureRecordsTable";
@@ -16,7 +20,10 @@ import { useFeatureRecords, type FeatureRecord } from "@/lib/use-feature-records
 import { type Values } from "@/components/SubFeatureForm";
 import { approvalLabels, classifyFeature, findApprovalStatusField } from "@/lib/feature-behavior";
 
-export default function FeatureDetailPage({                                         
+                                        
+
+export default function FeatureDetailPage({
+
   config,
   feature,
   icon,
@@ -167,7 +174,6 @@ export default function FeatureDetailPage({
         </div>
       </div>
 
-      {/* Records Table */}
       <FeatureRecordsTable
         featureName={feature.name}
         fields={fields}

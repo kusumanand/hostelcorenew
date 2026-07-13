@@ -2,13 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {  ShieldCheck } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, ShieldCheck } from "lucide-react";
 import { navItems } from "@/lib/nav-items";
+import { useAuth } from "@/lib/auth-context";
+import { MODULE_ACCESS, moduleSlugFromPath, ROLE_LABELS } from "@/lib/roles";
 import { useSidebar } from "@/lib/sidebar-context";
 
 export default function Sidebar() {
   const { collapsed, toggleCollapsed } = useSidebar();
   const pathname = usePathname();
+  const { user } = useAuth();
+
+const filteredNavItems = navItems.filter((item) => {
+  const slug = moduleSlugFromPath(item.href);
+  const allowed = MODULE_ACCESS[slug];
+
+  if (!user) return true;
+  if (!allowed) return true;
+
+  return allowed.includes(user.role);
+});
 
   return (
     <aside
@@ -33,7 +46,7 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
-        {navItems.map((item) => {
+       {filteredNavItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
           return (
@@ -81,7 +94,6 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="text-white text-[13px] font-medium truncate">Super Admin</p>
               <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
                 Online

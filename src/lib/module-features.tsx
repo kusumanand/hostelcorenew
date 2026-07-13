@@ -43,7 +43,7 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
     description:
       "Take applications online, verify documents and onboard new residents without paperwork.",
     features: [
-      { name: "Online Admission", description: "Public application form for prospective residents." },
+      { name: "Online Application", description: "Public application form for prospective residents." },
       { name: "Online Payment", description: "Accept admission and booking fees securely through online payment gateways." },
       { name: "Waiting List", description: "Automatically maintain and manage applicants when hostel capacity is full." },
       { name: "Document Upload", description: "Collect ID proofs, photos and certificates digitally." },
@@ -88,6 +88,7 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
       { name: "Room Management", description: "Configure room types, capacity and pricing." },
       { name: "Bed Allocation", description: "Allocate and reassign individual beds to residents." },
       { name: "Cleaning Schedule", description: "Plan and monitor room cleaning schedules for housekeeping staff." },
+      { name: "Laundry Bookings", description: "Schedule laundry services and track washing, drying, and delivery updates."},
       { name: "Room Maintenance", description: "Track maintenance requests, repairs and room service history." },
       { name: "Room Transfer", description: "Process room change requests with approvals." },
       { name: "Electricity Reading", description: "Record and analyze room-wise electricity meter readings." },
@@ -189,7 +190,7 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
     description:
       "Track every asset, purchase order and maintenance schedule in one place.",
     features: [
-      { name: "Asset Tracking", description: "Register and track all hostel assets." },
+      { name: "Asset Booking", description: "Register and track all hostel assets." },
       { name: "Furniture Tracking", description: "Track furniture allocation by room." },
       { name: "Purchase Orders", description: "Raise and approve purchase orders." },
       { name: "Vendor Management", description: "Maintain vendor directory and contracts." },
@@ -219,7 +220,7 @@ export const moduleCatalogue: Record<string, ModuleConfig> = {
       "Help residents study, learn and stay engaged outside the classroom.",
     features: [
       { name: "Study Room Booking", description: "Reserve quiet study rooms by time slot." },
-      { name: "Hostel Library   ", description: "Browse and issue books from the hostel library." },
+      { name: "Hostel Library", description: "Browse and issue books from the hostel library." },
       { name: "Online Learning Portal", description: "Access curated learning resources in-app." },
       { name: "Assignment Sharing", description: "Share and submit assignments digitally." },
       { name: "Event Management", description: "Organise and RSVP to hostel events." },

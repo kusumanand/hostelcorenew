@@ -172,7 +172,7 @@ const featureFormFields: Record<string, FormField[]> = {
   { name: "Employee Status", label: "Employee Status", type: "select", options: ["All", "Active", "Inactive", "On Leave"], },
   { name: "Export Format", label: "Export Format", type: "select", options: ["PDF", "Excel", "CSV"], },
 ],
-  "admissions::Online Admission":[
+  "admissions::Online Applicaton":[
     { name: "ApplicantName", label: "Applicant Name", type: "text" },
     { name: "gender", label: "Gender", type: "select", options:["Male", "Female"] },
     { name: "Phone", label: "Phone", type: "tel" },
@@ -422,6 +422,20 @@ const featureFormFields: Record<string, FormField[]> = {
   { name: "status", label: "Status", type: "select", options: ["Scheduled", "In Progress", "Completed", "Cancelled"] },
   { name: "completionDate", label: "Completion Date", type: "date" },
   { name: "remarks", label: "Remarks", type: "textarea" }
+],
+"rooms-beds::Laundry Booking": [
+  { name: "residentName", label: "Resident Name", type: "text" },
+  { name: "studentId", label: "Student ID", type: "text" },
+  { name: "roomNumber", label: "Room Number", type: "text" },
+  { name: "laundryType", label: "Laundry Type", type: "select", options: ["Wash Only", "Wash & Iron", "Dry Cleaning", "Iron Only"], },
+  { name: "clothesCount", label: "Number of Clothes", type: "number", },
+  { name: "pickupDate", label: "Pickup Date", type: "date", },
+  { name: "pickupTime", label: "Pickup Time", type: "time", },
+  { name: "specialInstructions", label: "Special Instructions", type: "textarea", span: 2, },
+  { name: "paymentStatus", label: "Payment Status", type: "select", options: ["Pending", "Paid"], },
+  { name: "status", label: "Laundry Status", type: "select", options: [ "Pending", "Pickup Scheduled", "Collected", "Washing", "Ironing", "Ready for Delivery", "Delivered", "Cancelled", ], },
+  { name: "assignedStaff", label: "Assigned Staff", type: "text", },
+  { name: "deliveryDate", label: "Expected Delivery Date", type: "date", },
 ],
 "rooms-beds::Room Maintenance": [
   { name: "roomNumber", label: "Room Number", type: "text" },
@@ -807,7 +821,7 @@ const featureFormFields: Record<string, FormField[]> = {
   { name: "feedback", label: "Feedback", type: "textarea" },
   { name: "ratingDate", label: "Rating Date", type: "date" }
 ],
-  "inventory::Asset Tracking": [
+  "inventory::Asset Booking": [
     { name: "assetName", label: "Asset Name", type: "text" },
     { name: "category", label: "Category", type: "select", options: ["Furniture", "Electronics", "Kitchen Equipment", "Other"] },
     { name: "other", label:"Other", type:"text", showWhen: { field: "Category", value: "Other", },},
@@ -919,6 +933,32 @@ const featureFormFields: Record<string, FormField[]> = {
     { name: "reportMonth", label: "Report Month", type: "text", placeholder: "e.g. June 2026" },
     { name: "include", label: "Include", type: "select", options: ["Attendance", "Fees", "Academics", "All"] },
     { name: "deliveryMethod", label: "Delivery Method", type: "select", options: ["Email", "WhatsApp", "In-App"] },
+  ],
+  "transport::Route Management": [
+    { name: "routeName", label: "Route Name", type: "text" },
+    { name: "startPoint", label: "Start Point", type: "text" },
+    { name: "endPoint", label: "End Point", type: "text" },
+    { name: "stops", label: "Stops", type: "textarea", required: false, span: 2 },
+    { name: "vehicleAssigned", label: "Vehicle Assigned", type: "text", required: false },
+  ],
+  "transport::Pickup Verification": [
+    { name: "residentName", label: "Resident Name", type: "text" },
+    { name: "routeName", label: "Route Name", type: "text" },
+    { name: "verificationMethod", label: "Verification Method", type: "select", options: ["OTP", "QR Code"] },
+    { name: "pickupTime", label: "Pickup Time", type: "datetime-local" },
+  ],
+  "transport::Vehicle Monitoring": [
+    { name: "vehicleNumber", label: "Vehicle Number", type: "text" },
+    { name: "driverName", label: "Driver Name", type: "text" },
+    { name: "fuelLevel", label: "Fuel Level (%)", type: "number", required: false },
+    { name: "lastServiced", label: "Last Serviced", type: "date", required: false },
+    { name: "documentsValidTill", label: "Documents Valid Till", type: "date", required: false },
+  ],
+  "transport::Transport Billing": [
+    { name: "residentName", label: "Resident Name", type: "text" },
+    { name: "routeName", label: "Route Name", type: "text" },
+    { name: "billingPeriod", label: "Billing Period", type: "select", options: ["Monthly", "Quarterly"] },
+    { name: "amount", label: "Amount (₹)", type: "number" },
   ],
    "enterprise-saas::Multi Language": [
     { name: "defaultLanguage", label: "Default Language", type: "select", options: ["English", "Hindi", "Regional Language"] },
