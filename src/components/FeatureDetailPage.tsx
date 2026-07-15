@@ -2,14 +2,7 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  ChevronRight,
-  CircleDot,
-  Info,
-  ListChecks,
-  Settings2,
-
-} from "lucide-react";
+import { ChevronRight, CircleDot, LockKeyhole } from "lucide-react";
 import Topbar from "@/components/Topbar";
 import FeatureRecordsTable from "@/components/FeatureRecordsTable";
 import FeatureFormModal from "@/components/FeatureFormModal";
@@ -19,11 +12,11 @@ import { getFormFields } from "@/lib/form-fields";
 import { useFeatureRecords, type FeatureRecord } from "@/lib/use-feature-records";
 import { type Values } from "@/components/SubFeatureForm";
 import { approvalLabels, classifyFeature, findApprovalStatusField } from "@/lib/feature-behavior";
-
-                                        
+import { useAuth } from "@/lib/auth-context";
+import { canAccessFeature } from "@/lib/feature-access";
+import { isPersonalRecordRole } from "@/lib/roles";
 
 export default function FeatureDetailPage({
-
   config,
   feature,
   icon,
@@ -39,6 +32,9 @@ export default function FeatureDetailPage({
     featureSlug,
     feature.name
   );
+  const { user } = useAuth();
+  const allowed = user ? canAccessFeature(user.role, config.slug, featureSlug) : true;
+  const personal = user ? isPersonalRecordRole(user.role) : false;
 
   const approvalField = useMemo(
     () => findApprovalStatusField(fields),
@@ -98,117 +94,142 @@ export default function FeatureDetailPage({
       ) as Values)
     : undefined;
 
-  return (
-  <>
-    <Topbar title={feature.name} />
-
-    <main className="flex-1 overflow-y-auto p-5 space-y-5">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-[12px] text-slate-500 dark:text-slate-400">
-        <Link
-          href="/dashboard"
-          className="hover:text-gold-dark dark:hover:text-gold transition-colors"
-        >
-          Dashboard
-        </Link>
-
-        <ChevronRight size={12} className="shrink-0" />
-
-        <Link
-          href={`/${config.slug}`}
-          className="hover:text-gold-dark dark:hover:text-gold transition-colors"
-        >
-          {config.title}
-        </Link>
-
-        <ChevronRight size={12} className="shrink-0" />
-
-        <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
-          {feature.name}
-        </span>
-      </nav>
-
-      {/* Header */}
-      <div className="card p-6 flex flex-col sm:flex-row sm:items-center gap-4">
-        <div className="w-14 h-14 rounded-2xl gold-gradient flex items-center justify-center shrink-0 text-navy-950">
-          {icon}
-        </div>
-
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
-              {feature.name}
-            </h2>
-
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
-              <CircleDot size={10} />
-              Active
-            </span>
-
-            {archetype === "document" && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
-                Issues a document
-              </span>
-            )}
-
-            {archetype === "approval" && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400">
-                Approval workflow
-              </span>
-            )}
-          </div>
-
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
-            {feature.description}
-          </p>
-
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">
-            Part of{" "}
-            <Link
-              href={`/${config.slug}`}
-              className="text-gold-dark dark:text-gold hover:underline"
-            >
-              {config.title}
+  if (!allowed) {
+    return (
+      <>
+        <Topbar title={feature.name} />
+        <main className="flex-1 overflow-y-auto p-5 space-y-5">
+          <nav className="flex items-center gap-1.5 text-[12px] text-slate-500 dark:text-slate-400">
+            <Link href="/dashboard" className="hover:text-gold-dark dark:hover:text-gold transition-colors">
+              Dashboard
             </Link>
-          </p>
+            <ChevronRight size={12} className="shrink-0" />
+            <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
+              {feature.name}
+            </span>
+          </nav>
+
+          <div className="card p-10 flex flex-col items-center justify-center text-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-navy-700/60 flex items-center justify-center text-slate-400 dark:text-slate-500">
+              <LockKeyhole size={24} />
+            </div>
+            <h2 className="text-base font-semibold text-slate-700 dark:text-slate-100">
+              Not available for your role
+            </h2>
+            <p className="text-[13px] text-slate-500 dark:text-slate-400 max-w-sm">
+              {feature.name} isn&apos;t part of what your account has access to. If you
+              think this is a mistake, contact your administrator.
+            </p>
+            <Link
+              href="/dashboard"
+              className="mt-2 gold-gradient text-navy-950 text-[13px] font-semibold px-5 py-2.5 rounded-lg shadow-sm hover:brightness-105 transition"
+            >
+              Back to Dashboard
+            </Link>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Topbar title={feature.name} />
+      <main className="flex-1 overflow-y-auto p-5 space-y-5">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-1.5 text-[12px] text-slate-500 dark:text-slate-400">
+          <Link href="/dashboard" className="hover:text-gold-dark dark:hover:text-gold transition-colors">
+            Dashboard
+          </Link>
+          <ChevronRight size={12} className="shrink-0" />
+          <Link
+            href={`/${config.slug}`}
+            className="hover:text-gold-dark dark:hover:text-gold transition-colors"
+          >
+            {config.title}
+          </Link>
+          <ChevronRight size={12} className="shrink-0" />
+          <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
+            {feature.name}
+          </span>
+        </nav>
+
+        {/* Header */}
+        <div className="card p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl gold-gradient flex items-center justify-center shrink-0 text-navy-950">
+            {icon}
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
+                {feature.name}
+              </h2>
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                <CircleDot size={10} />
+                Active
+              </span>
+              {archetype === "document" && (
+                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                  Issues a document
+                </span>
+              )}
+              {archetype === "approval" && (
+                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400">
+                  Approval workflow
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+              {feature.description}
+            </p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+              Part of{" "}
+              <Link
+                href={`/${config.slug}`}
+                className="text-gold-dark dark:text-gold hover:underline"
+              >
+                {config.title}
+              </Link>
+            </p>
+          </div>
         </div>
-      </div>
 
-      <FeatureRecordsTable
-        featureName={feature.name}
-        fields={fields}
-        records={records}
-        archetype={archetype}
-        onAdd={openAddModal}
-        onEdit={openEditModal}
-        onDelete={handleDelete}
-        onView={archetype === "document" ? setViewingRecord : undefined}
-        onQuickStatus={
-          archetype === "approval" ? handleQuickStatus : undefined
-        }
-      />
-    </main>
+        {/* Data first: records table with its own Add button, stats and search */}
+        <FeatureRecordsTable
+          featureName={feature.name}
+          fields={fields}
+          records={records}
+          archetype={archetype}
+          onAdd={openAddModal}
+          onEdit={openEditModal}
+          onDelete={handleDelete}
+          onView={archetype === "document" ? setViewingRecord : undefined}
+          onQuickStatus={archetype === "approval" ? handleQuickStatus : undefined}
+          personal={personal}
+        />
 
-    {modalOpen && (
-      <FeatureFormModal
-        featureName={feature.name}
-        fields={fields}
-        initialValues={editValues}
-        onSubmit={handleSubmit}
-        onClose={() => setModalOpen(false)}
-      />
-    )}
+      </main>
 
-    {viewingRecord && (
-      <FeatureDocumentModal
-        hostelName="HostelCore"
-        moduleTitle={config.title}
-        featureName={feature.name}
-        fields={fields}
-        record={viewingRecord}
-        onClose={() => setViewingRecord(null)}
-      />
-    )}
-  </>
-);
+      {modalOpen && (
+        <FeatureFormModal
+          featureName={feature.name}
+          fields={fields}
+          initialValues={editValues}
+          onSubmit={handleSubmit}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
+
+      {viewingRecord && (
+        <FeatureDocumentModal
+          hostelName="HostelCore"
+          moduleTitle={config.title}
+          featureName={feature.name}
+          fields={fields}
+          record={viewingRecord}
+          onClose={() => setViewingRecord(null)}
+        />
+      )}
+    </>
+  );
 }

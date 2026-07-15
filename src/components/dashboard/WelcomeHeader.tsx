@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, Moon, Sun,Mail, Zap, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { useTheme } from "@/lib/theme-context";
+import { useAuth } from "@/lib/auth-context";
+import { ROLE_LABELS } from "@/lib/roles";
 
 function getGreeting(hour: number) {
   if (hour < 12) return "Good Morning";
@@ -11,8 +13,9 @@ function getGreeting(hour: number) {
   return "Good Evening";
 }
 
-export default function WelcomeHeader() {
+export default function WelcomeHeader({ subtitle }: { subtitle?: string }) {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
   const [now, setNow] = useState<Date | null>(null);
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,11 +54,10 @@ export default function WelcomeHeader() {
       {/* Left: greeting + identity + live date/time (stacked) */}
       <div>
         <h1 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-white">
-          {greeting}, Admin 👋
+          {greeting}, {user?.name || "there"} 👋
         </h1>
         <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5">
-          HostelCore &middot; Bhopal Branch &middot;{" "}
-          <span className="text-gold-dark dark:text-gold font-medium">2026-27</span>
+          {subtitle ?? `HostelCore \u00b7 Bhopal Branch \u00b7 ${user ? ROLE_LABELS[user.role] : ""} dashboard`}
         </p>
         <p className="text-[13px] font-medium text-slate-600 dark:text-slate-300 mt-2">
           {dateStr || "—"}
@@ -101,11 +103,14 @@ export default function WelcomeHeader() {
             className="flex items-center gap-2 pl-2 cursor-pointer"
           >
             <div className="w-8 h-8 rounded-full gold-gradient flex items-center justify-center text-navy-950 font-semibold text-xs shrink-0">
-              A
+              {(user?.name || "?").charAt(0).toUpperCase()}
             </div>
             <div className="hidden lg:block leading-tight text-left">
-              <p className="text-[13px] font-medium text-slate-700 dark:text-slate-100">Admin</p>
-              <p className="text-[11px] text-slate-400">Super Admin</p>
+              <p className="text-[13px] font-medium text-slate-700 dark:text-slate-100">{user?.name || "Guest"}</p>
+              <p className="text-[11px] text-slate-400 flex items-center gap-1">
+                {user && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block shrink-0" />}
+                {user ? ROLE_LABELS[user.role] : ""}
+              </p>
             </div>
             <ChevronDown
               size={14}

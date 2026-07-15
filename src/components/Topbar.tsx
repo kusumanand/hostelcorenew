@@ -5,17 +5,18 @@ import { useRouter } from "next/navigation";
 import { Search, Bell, Mail, ChevronDown, Plus, Sun, Moon, Menu } from "lucide-react";
 import { useTheme } from "@/lib/theme-context";
 import { useSidebar } from "@/lib/sidebar-context";
+import { useAuth } from "@/lib/auth-context";
+import { ROLE_LABELS } from "@/lib/roles";
 
 export default function Topbar({ title = "Dashboard" }: { title?: string }) {
   const { theme, toggleTheme } = useTheme();
   const { toggleCollapsed } = useSidebar();
+  const { user, logout } = useAuth();
   const router = useRouter();
   const [showLogout, setShowLogout] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.clear();
-
+    logout();
     router.push("/login");
   };
 
@@ -32,6 +33,13 @@ export default function Topbar({ title = "Dashboard" }: { title?: string }) {
       <h1 className="hidden sm:block text-sm font-semibold text-slate-700 dark:text-slate-100 shrink-0">
         {title}
       </h1>
+
+      {user && (
+        <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-full px-2.5 py-1 shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+          {ROLE_LABELS[user.role]}
+        </span>
+      )}
 
       <div className="flex-1 max-w-md relative hidden md:block">
         <Search
@@ -66,11 +74,18 @@ export default function Topbar({ title = "Dashboard" }: { title?: string }) {
 
         <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-navy-700/60 cursor-pointer">
           <div className="w-8 h-8 rounded-full gold-gradient flex items-center justify-center text-navy-950 font-semibold text-xs">
-            A
+            {user?.name?.charAt(0).toUpperCase() ?? "?"}
           </div>
           <div className="hidden lg:block leading-tight">
-            <p className="text-[13px] font-medium text-slate-700 dark:text-slate-100">Admin</p>
-            <p className="text-[11px] text-slate-400">Super Admin</p>
+            <p className="text-[13px] font-medium text-slate-700 dark:text-slate-100">
+              {user?.name ?? "Guest"}
+            </p>
+            <p className="text-[11px] text-slate-400 flex items-center gap-1">
+              {user && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block shrink-0" />
+              )}
+              {user ? ROLE_LABELS[user.role] : ""}
+            </p>
           </div>
           <div className="relative">
   <button

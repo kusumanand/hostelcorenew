@@ -21,12 +21,9 @@ export default function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("student");
-  const [accountType, setAccountType] = useState<Role>("super_admin");
-
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Mock auth: registering signs you straight in with the chosen role.
     login({
       name: name || email.split("@")[0] || "User",
       email,
@@ -79,36 +76,44 @@ export default function RegisterForm() {
               className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2"
             >
               {/* Account Type */}
-              <div className="md:col-span-2">
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Account Type
-                </label>
+            <div className="md:col-span-2">
+  <label className="mb-2 block text-sm font-medium text-gray-700">
+    Account Type
+  </label>
 
-                <select
-                  value={accountType}
-                 onChange={(e) => setAccountType(e.target.value as Role)}
-                  className="h-12 w-full rounded-lg border border-gray-300 px-4 text-sm transition focus:border-[#D4A017] focus:outline-none focus:ring-2 focus:ring-[#D4A017]"
-                >
-                  <option value="super_admin">Super Admin</option>
-                  <option value="admin">Admin</option>
-                  <option value="warden">Warden</option>
-                  <option value="hr">HR</option>
-                  <option value="accountant">Accountant</option>
-                  <option value="mess_manager">Mess Manager</option>
-                  <option value="student">Student</option>
-                  <option value="parent">Parent</option>
-                </select>
-              </div>
+  <div className="relative">
+    <div className="absolute left-4 top-4 text-gray-400">
+      <UserCog size={18} />
+    </div>
+
+    <select
+      value={role}
+      onChange={(e) => setRole(e.target.value as Role)}
+      className="w-full h-12 pl-12 pr-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4A017] appearance-none bg-white"
+      required
+    >
+      {ROLES.map((r) => (
+        <option key={r} value={r}>
+          {ROLE_LABELS[r]}
+        </option>
+      ))}
+    </select>
+  </div>
+</div> 
 
               <Input
                 icon={<User size={18} />}
                 placeholder="Full Name"
+                value={name}
+                onChange={setName}
               />
 
               <Input
                 icon={<Mail size={18} />}
                 placeholder="Email Address"
                 type="email"
+                 value={email}
+                 onChange={setEmail}
               />
 
               <Input
@@ -164,10 +169,14 @@ function Input({
   icon,
   placeholder,
   type = "text",
+   value,
+  onChange,
 }: {
-  icon: ReactNode;
+   icon: ReactNode;
   placeholder: string;
   type?: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }) {
   return (
     <div className="relative">
@@ -175,10 +184,13 @@ function Input({
         {icon}
       </div>
 
+     
       <input
         type={type}
         placeholder={placeholder}
-        className="h-12 w-full rounded-lg border border-gray-300 pl-12 pr-4 text-sm transition focus:border-[#D4A017] focus:outline-none focus:ring-2 focus:ring-[#D4A017]"
+        value={value}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        className="w-full h-12 pl-12 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4A017]"
       />
     </div>
   );

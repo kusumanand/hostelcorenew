@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (stored) setUser(JSON.parse(stored));
     } catch {
-      // ignore malformed storage
+
     } finally {
       setIsLoading(false);
     }

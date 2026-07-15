@@ -27,7 +27,6 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
   }
 
   if (!user) {
-    // Redirect is in-flight; render nothing to avoid a flash of protected content.
     return null;
   }
 

@@ -6,11 +6,13 @@ import {
   Database,
   Download,
   FileText,
+  ListChecks,
   Pencil,
   Plus,
   Search,
   Trash2,
   XCircle,
+ 
 } from "lucide-react";
 import { type FormField } from "@/lib/form-fields";
 import { type FeatureRecord } from "@/lib/use-feature-records";
@@ -71,6 +73,7 @@ export default function FeatureRecordsTable({
   onDelete,
   onView,
   onQuickStatus,
+  personal = false,
 }: {
   featureName: string;
   fields: FormField[];
@@ -79,10 +82,12 @@ export default function FeatureRecordsTable({
   onAdd: () => void;
   onEdit: (record: FeatureRecord) => void;
   onDelete: (id: string) => void;
-  /** Opens the printable document view (only used for "document" archetype features). */
+ 
   onView?: (record: FeatureRecord) => void;
-  /** Sets an approval status directly from the table (only for "approval" archetype features). */
+ 
   onQuickStatus?: (id: string, intent: "approve" | "reject") => void;
+
+  personal?: boolean;
 }) {
   const [query, setQuery] = useState("");
 
@@ -91,7 +96,7 @@ export default function FeatureRecordsTable({
     [archetype, fields]
   );
 
-  // Pick a compact, sensible set of columns: skip long-text/file fields, cap at 4.
+ 
   const columns = useMemo(
     () =>
       fields
@@ -114,7 +119,7 @@ export default function FeatureRecordsTable({
     );
   }, [records, query]);
 
-  // "Extras": numeric totals + status breakdown, computed from this feature's own fields.
+  
   const totals = useMemo(() => {
     return numericFields.map((f) => {
       const sum = records.reduce((acc, r) => {
@@ -157,10 +162,10 @@ export default function FeatureRecordsTable({
 
   return (
     <div className="space-y-4">
-      {/* Stat cards — generated from this feature's own field types */}
+     
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         <div className="card p-4">
-          <p className="text-[11px] text-slate-400">Total Entries</p>
+          <p className="text-[11px] text-slate-400"> {personal ? `My ${featureName}` : "Total Entries"}</p>
           <p className="text-xl font-semibold text-slate-800 dark:text-white mt-1">
             {records.length}
           </p>
@@ -187,8 +192,16 @@ export default function FeatureRecordsTable({
       <div className="card p-4 flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <Database size={15} className="text-gold-dark dark:text-gold shrink-0" />
+          {personal ? (
+            <ListChecks size={15}
+            className="text-gold-dark dark:text-gold shrink-0"/>
+
+          ) : (
+            <Database size={15}
+            className="text-gold-dark dark:text-gold shrink-0"/>
+          )}
           <h3 className="text-[13px] font-semibold text-slate-700 dark:text-slate-100 truncate">
-            {featureName} Records
+          {personal ? `My ${featureName}` : `${featureName} Records`}
           </h3>
           <span className="text-[11px] text-slate-400 shrink-0">
             {filtered.length} of {records.length}
@@ -207,6 +220,7 @@ export default function FeatureRecordsTable({
               className="h-9 pl-8 pr-3 rounded-lg border border-slate-200 dark:border-navy-600/60 bg-white dark:bg-navy-900 text-[12px] text-slate-700 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold/50 w-40 sm:w-56"
             />
           </div>
+          {personal && (
           <button
             onClick={handleExportCsv}
             disabled={records.length === 0}
@@ -215,12 +229,13 @@ export default function FeatureRecordsTable({
             <Download size={13} />
             Export CSV
           </button>
+          )}
           <button
             onClick={onAdd}
             className="inline-flex items-center gap-1.5 gold-gradient text-navy-950 text-[12px] font-semibold px-4 py-2 rounded-lg shadow-sm hover:brightness-105 transition"
           >
-            <Plus size={14} />
-            Add {featureName}
+           <Plus size={14} />
+            {personal ? `New ${featureName}` : `Add ${featureName}`}
           </button>
         </div>
       </div>
@@ -231,7 +246,9 @@ export default function FeatureRecordsTable({
           <div className="p-10 text-center">
             <p className="text-[13px] text-slate-500 dark:text-slate-400">
               {records.length === 0
-                ? `No ${featureName.toLowerCase()} entries yet.`
+                ? personal
+                ? `You haven't added any ${featureName.toLowerCase()}yet.`:
+                `No ${featureName.toLowerCase()} entries yet.`
                 : "No records match your search."}
             </p>
             {records.length === 0 && (
@@ -240,7 +257,7 @@ export default function FeatureRecordsTable({
                 className="mt-4 inline-flex items-center gap-1.5 gold-gradient text-navy-950 text-[12px] font-semibold px-4 py-2 rounded-lg shadow-sm hover:brightness-105 transition"
               >
                 <Plus size={14} />
-                Add the first entry
+          {personal ? `Fill The Form ${featureName.toLowerCase()}` : "Add the Entry"}
               </button>
             )}
           </div>

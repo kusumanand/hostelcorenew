@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, UserCog} from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
 import { ROLES, ROLE_LABELS, type Role } from "@/lib/roles";
@@ -49,11 +49,16 @@ export default function LoginForm() {
             User Type
           </label>
 
+          <div className="relative mt-2">
+            <UserCog
+              size={18}
+               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            />
+
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as Role)}
-            className="mt-2 h-11 w-full rounded-xl border border-gray-300 bg-white px-3 text-sm focus:border-[#D4A017] focus:outline-none focus:ring-2 focus:ring-[#D4A017]"
-          >
+            className="mt-2 h-11 w-full rounded-xl border border-gray-300 bg-white pl-10 pr-3 text-sm focus:border-[#D4A017] focus:outline-none focus:ring-2 focus:ring-[#D4A017]"          >
             {ROLES.map((item) => (
               <option key={item} value={item}>
                 {ROLE_LABELS[item]}
@@ -61,7 +66,7 @@ export default function LoginForm() {
             ))}
           </select>
         </div>
-
+        </div>
         {/* Email */}
         <div>
           <label className="text-sm font-medium text-gray-700">

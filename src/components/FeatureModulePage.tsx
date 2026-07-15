@@ -1,8 +1,12 @@
+"use client";
+
 import { type ReactNode } from "react";
 import Link from "next/link";
-import { CheckCircle2, ChevronRight } from "lucide-react";
+import { CheckCircle2, ChevronRight, LockKeyhole } from "lucide-react";
 import Topbar from "@/components/Topbar";
 import { type ModuleConfig, slugify } from "@/lib/module-features";
+import { useAuth } from "@/lib/auth-context";
+import { allowedFeatureSlugsForModule } from "@/lib/feature-access";
 
 export default function FeatureModulePage({
   config,
@@ -11,6 +15,15 @@ export default function FeatureModulePage({
   config: ModuleConfig;
   icon: ReactNode;
 }) {
+  const { user } = useAuth();
+  const allowedSlugs = user
+  ? allowedFeatureSlugsForModule(user.role, config.slug):null;
+
+  // null => role isn't feature-restricted, every feature in the module is
+  // visible (existing behaviour).Otherwise only show the whitelisted set.
+
+  const visibleFeatures = allowedSlugs? config.features.filter((f) => allowedSlugs.has(slugify(f.name))):config.features;
+
   return (
     <>
       <Topbar title={config.title} />
@@ -37,14 +50,25 @@ export default function FeatureModulePage({
         <div>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[13px] font-semibold text-slate-700 dark:text-slate-100">
-              Included Features
+           {allowedSlugs ? "Available to you" : "Included Features"}
             </h3>
             <span className="text-[11px] text-slate-400">
-              {config.features.length} features
+            {visibleFeatures.length} feature {visibleFeatures.length ===1 ? "" : "s"} 
             </span>
           </div>
+
+          {visibleFeatures.length === 0 ? (
+            <div className="card p-8 flex flex-col items-center justify-center text-center gap-2">
+              <LockKeyhole size={22}
+              className="text-slate-300 dark:text-slate-600"/>
+              <p className="text-[13px] text-slate-500 dark:text-slate-400">
+                Nothing here yet for your role
+              </p>
+              </div>
+          ) : (
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {config.features.map((feature) => (
+            {visibleFeatures.map((feature) => (
               <Link
                 key={feature.name}
                 href={`/${config.slug}/${slugify(feature.name)}`}
@@ -69,7 +93,8 @@ export default function FeatureModulePage({
               </Link>
             ))}
           </div>
-        </div>
+          )}
+          </div>
       </main>
     </>
   );

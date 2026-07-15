@@ -22,11 +22,21 @@ import {
   GraduationCap,
 } from "lucide-react";
 
+import { MODULE_ACCESS, moduleSlugFromPath, type Role, } from "./roles";
+import { getModuleConfig, slugify } from "./module-features";
+import { allowedFeatureSlugsForModule } from "./feature-access";
+
+export interface NavChild {
+  label: string;
+  href: string;
+}
+
 export interface NavItem {
   label: string;
   href: string;
   icon: LucideIcon;
   badge?: string;
+  children?: NavChild[];  
 }
 
 export const navItems: NavItem[] = [
@@ -50,3 +60,39 @@ export const navItems: NavItem[] = [
   { label: "Enterprise & SaaS Features", href: "/enterprise-saas", icon: Cloud },
   { label: "Complaints & HelpDesk", href: "/complaints", icon: MessageSquareWarning },
 ];
+
+function withExpandedFeatures(item: NavItem, role: Role)
+: NavItem {
+  const slug = moduleSlugFromPath(item.href);
+  const config = getModuleConfig(slug);
+  if (!config) return item;
+
+  const allowedSlugs = allowedFeatureSlugsForModule
+  (role, slug);
+  const features = allowedSlugs? config.features.filter((f) => allowedSlugs.has(slugify(f.name))): config.features;
+
+  return {
+    ...item,
+    children: features.map((f) => ({
+      label: f.name,
+      href: `/${slug}/${slugify(f.name)}`,
+    })),
+  };
+}
+
+export function navItem(role: Role): NavItem[] {
+  const base = navItems.filter((item) => {
+    const slug = moduleSlugFromPath(item.href);
+    const allowed = MODULE_ACCESS[slug];
+    return !allowed  || allowed.includes(role);
+  });
+
+  const nonDashboard = base.filter((item) => item.href !== "/dashboard");
+  if (nonDashboard.length === 1) {
+    return base.map((item) =>
+    item.href === nonDashboard[0].href ?
+  withExpandedFeatures(item, role): item);
+  }
+
+  return base;
+}

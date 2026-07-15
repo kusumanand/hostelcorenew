@@ -31,13 +31,13 @@ export default function SubfeatureForm({
 }: {
   featureName: string;
   fields: FormField[];
-  /** Pass existing values to pre-fill the form in "edit" mode. */
+ 
   initialValues?: Values;
-  /** Overrides the default "Save ... Entry" button text. */
+ 
   submitLabel?: string;
-  /** Called with the collected field values once the form is submitted. */
+
   onSubmit: (values: Values) => void | Promise<void>;
-  /** Shown as a "Cancel" button when the form lives inside a modal. */
+ 
   onCancel?: () => void;
 }) {
   const [values, setValues] = useState<Values>(() =>

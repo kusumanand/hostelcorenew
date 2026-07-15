@@ -825,8 +825,10 @@ const featureFormFields: Record<string, FormField[]> = {
     { name: "assetName", label: "Asset Name", type: "text" },
     { name: "category", label: "Category", type: "select", options: ["Furniture", "Electronics", "Kitchen Equipment", "Other"] },
     { name: "other", label:"Other", type:"text", showWhen: { field: "Category", value: "Other", },},
-    { name: "serialNumber", label: "Serial Number", type: "text", required: false },   
-    { name: "purchaseDate", label: "Purchase Date", type: "date" },
+    { name: "purpose", label: "Purpose", type: "text", required: false },   
+    { name: "Date", label: "Date", type: "date" },
+    { name: "Return Date", label: "Return Date", type: "date" },
+
   ],
   "inventory::Furniture Tracking": [
     { name: "itemName", label: "Item Name", type: "text" },
