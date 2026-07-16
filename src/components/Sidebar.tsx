@@ -4,27 +4,25 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ShieldCheck, LogOut, ChevronDown } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { navItems, navItem } from "@/lib/nav-items";
 import { useSidebar } from "@/lib/sidebar-context";
 import { useAuth } from "@/lib/auth-context";
 import { ROLE_LABELS } from "@/lib/roles";
 
 export default function Sidebar() {
-  const { collapsed } = useSidebar();
+  const { collapsed, toggleCollapsed } = useSidebar();
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
 
-  // When logged in, navItem(role) both filters modules by access AND
-  // attaches each module's allowed sub-features as sidebar children (for
-  // roles configured in SIDEBAR_FEATURE_ROLES). Logged-out state falls
-  // back to the full static list.
+
   const items = user ? navItem(user.role) : navItems;
 
-  // Modules with sub-features render as collapsible groups so a role with
-  // many modules (e.g. warden, student) doesn't get an unmanageably long
-  // sidebar. The group containing the active page is always open; the
-  // rest can be toggled by the user.
+  const nonDashboardItems = items.filter((item) => item.href !== "/dashboard");
+const hasOnlyOneModule = nonDashboardItems.length === 1;
+
+  
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -34,7 +32,7 @@ export default function Sidebar() {
     if (activeParent) {
       setOpenGroups((prev) => ({ ...prev, [activeParent.href]: true }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [pathname]);
 
   const toggleGroup = (href: string) => {
@@ -52,27 +50,83 @@ export default function Sidebar() {
         collapsed ? "w-[76px]" : "w-[270px]"
       }`}
     >
-      {/* Logo */}
-      <div className="flex items-center gap-3 px-4 h-16 border-b border-navy-700/60 shrink-0">
-        <div className="flex items-center justify-center w-9 h-9 rounded-lg gold-gradient shrink-0">
-          <ShieldCheck size={20} className="text-navy-950" />
-        </div>
-        {!collapsed && (
-          <div className="min-w-0">
-            <p className="text-white font-semibold text-sm leading-tight tracking-wide truncate">
-              HOSTELCORE
-            </p>
-            <p className="text-[10px] text-slate-400 truncate">Smart Hostel Management</p>
-          </div>
-        )}
+   
+     {/* Logo */}
+<div className="flex items-center justify-between px-4 h-16 border-b border-navy-700/60 shrink-0">
+  <div className="flex items-center gap-3 min-w-0">
+    <div className="flex items-center justify-center w-9 h-9 rounded-lg gold-gradient shrink-0">
+      <ShieldCheck size={20} className="text-navy-950" />
+    </div>
+
+    {!collapsed && (
+      <div className="min-w-0">
+        <p className="text-white font-semibold text-sm leading-tight truncate">
+          HOSTELCORE
+        </p>
+        <p className="text-[10px] text-slate-400 truncate">
+          Smart Hostel Management
+        </p>
       </div>
+    )}
+  </div>
+
+  <button
+    onClick={toggleCollapsed}
+    className="w-9 h-9 rounded-lg bg-navy-800 hover:bg-navy-700 border border-navy-700 flex items-center justify-center transition-colors shrink-0"
+    title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+  >
+    {collapsed ? (
+      <PanelLeftOpen size={18} className="text-gold" />
+    ) : (
+      <PanelLeftClose size={18} className="text-gold" />
+    )}
+  </button>
+</div>
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
         {items.map((item) => {
           const Icon = item.icon;
 
-          if (item.children && item.children.length > 0) {
+if (
+  hasOnlyOneModule &&
+  item.href !== "/dashboard" &&
+  item.children &&
+  item.children.length > 0
+) {
+  return (
+    <div key={item.href}>
+      {item.children.map((child) => {
+        const active = pathname === child.href;
+
+        return (
+          <Link
+            key={child.href}
+            href={child.href}
+            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] transition-colors relative
+              ${
+                active
+                  ? "bg-gold/15 text-gold-light font-medium"
+                  : "text-slate-300 hover:bg-white/5 hover:text-white"
+              }`}
+          >
+            {active && (
+              <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-gold" />
+            )}
+
+            <Icon size={18} className="shrink-0" />
+
+            {!collapsed && (
+              <span className="truncate">{child.label}</span>
+            )}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+          if (item.children && item.children.length > 1) {
             const hasActiveChild = item.children.some(
               (child) => child.href === pathname
             );
@@ -138,6 +192,38 @@ export default function Sidebar() {
               </div>
             );
           }
+
+          if (item.children && item.children.length === 1) {
+  const child = item.children[0];
+  const active = pathname === child.href;
+  const Icon = item.icon;
+
+  return (
+    <Link
+      key={child.href}
+      href={child.href}
+      title={collapsed ? child.label : undefined}
+      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] transition-colors relative
+        ${
+          active
+            ? "bg-gold/15 text-gold-light font-medium"
+            : "text-slate-300 hover:bg-white/5 hover:text-white"
+        }`}
+    >
+      {active && (
+        <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-gold" />
+      )}
+
+      <Icon size={18} className="shrink-0" />
+
+      {!collapsed && (
+        <span className="truncate flex-1">
+          {child.label}
+        </span>
+      )}
+    </Link>
+  );
+}
 
           const active = pathname === item.href;
           return (

@@ -5,7 +5,7 @@ import {
   BedDouble,
   DoorOpen,
   Wallet,
-  ShieldCheck,
+  Fingerprint,
   UserCheck,
   MessageSquareWarning,
   UtensilsCrossed,
@@ -19,7 +19,6 @@ import {
   Building2,
   Cloud,
   type LucideIcon,
-  GraduationCap,
 } from "lucide-react";
 
 import { MODULE_ACCESS, moduleSlugFromPath, type Role, } from "./roles";
@@ -46,7 +45,7 @@ export const navItems: NavItem[] = [
   { label: "Resident Management", href: "/residents", icon: UserCheck },
   { label: "Room and Bed Management", href: "/rooms-beds", icon: BedDouble },
   { label: "Fees & Accounting", href: "/fees-accounting", icon: Wallet },
-  { label: "Attendance & Security", href: "/attendance-security", icon: ShieldCheck },
+  { label: "Attendance & Security", href: "/attendance-security", icon: Fingerprint },
   { label: "Visitor Management", href: "/visitors", icon: DoorOpen },
   { label: "Mess Management", href: "/mess", icon: UtensilsCrossed },
   { label: "Inventory & Assets", href: "/inventory", icon: Boxes },
@@ -80,12 +79,29 @@ function withExpandedFeatures(item: NavItem, role: Role)
   };
 }
 
+//
+
+const SIDEBAR_FEATURE_ROLES: Role[] = [
+  "warden",
+  "hr",
+  "parent",
+  "student",
+  "accountant",
+  "mess_manager",
+];
+
 export function navItem(role: Role): NavItem[] {
   const base = navItems.filter((item) => {
     const slug = moduleSlugFromPath(item.href);
     const allowed = MODULE_ACCESS[slug];
     return !allowed  || allowed.includes(role);
   });
+
+  if (SIDEBAR_FEATURE_ROLES.includes(role)) {
+    return base.map((item) =>
+      item.href === "/dashboard" ? item : withExpandedFeatures(item, role)
+    );
+  }
 
   const nonDashboard = base.filter((item) => item.href !== "/dashboard");
   if (nonDashboard.length === 1) {
