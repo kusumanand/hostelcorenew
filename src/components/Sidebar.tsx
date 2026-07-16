@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { ShieldCheck, LogOut } from "lucide-react";
-import { navItems } from "@/lib/nav-items";
+import { useEffect, useState } from "react";
+import { ShieldCheck, LogOut, ChevronDown } from "lucide-react";
+import { navItems, navItem } from "@/lib/nav-items";
 import { useSidebar } from "@/lib/sidebar-context";
 import { useAuth } from "@/lib/auth-context";
-import {  ROLE_LABELS, MODULE_ACCESS, moduleSlugFromPath, } from "@/lib/roles";
+import { ROLE_LABELS } from "@/lib/roles";
 
 export default function Sidebar() {
   const { collapsed } = useSidebar();
@@ -14,15 +15,31 @@ export default function Sidebar() {
   const router = useRouter();
   const { user, logout } = useAuth();
 
-const items = navItems.filter((item) => {
-  const slug = moduleSlugFromPath(item.href);
-  const allowed = MODULE_ACCESS[slug];
+  // When logged in, navItem(role) both filters modules by access AND
+  // attaches each module's allowed sub-features as sidebar children (for
+  // roles configured in SIDEBAR_FEATURE_ROLES). Logged-out state falls
+  // back to the full static list.
+  const items = user ? navItem(user.role) : navItems;
 
-  if (!user) return true;
-  if (!allowed) return true;
+  // Modules with sub-features render as collapsible groups so a role with
+  // many modules (e.g. warden, student) doesn't get an unmanageably long
+  // sidebar. The group containing the active page is always open; the
+  // rest can be toggled by the user.
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
-  return allowed.includes(user.role);
-});
+  useEffect(() => {
+    const activeParent = items.find((item) =>
+      item.children?.some((child) => child.href === pathname)
+    );
+    if (activeParent) {
+      setOpenGroups((prev) => ({ ...prev, [activeParent.href]: true }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  const toggleGroup = (href: string) => {
+    setOpenGroups((prev) => ({ ...prev, [href]: !prev[href] }));
+  };
 
   const handleLogout = () => {
     logout();
@@ -56,43 +73,68 @@ const items = navItems.filter((item) => {
           const Icon = item.icon;
 
           if (item.children && item.children.length > 0) {
+            const hasActiveChild = item.children.some(
+              (child) => child.href === pathname
+            );
+            const isOpen = collapsed || (openGroups[item.href] ?? hasActiveChild);
             return (
               <div key={item.href} className="pt-1">
-                <div
+                <button
+                  type="button"
+                  onClick={() => !collapsed && toggleGroup(item.href)}
                   title={collapsed ? item.label : undefined}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500"
+                  aria-expanded={isOpen}
+                  className={`w-full flex items-center gap-3 rounded-lg px-3 py-2 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+                    hasActiveChild
+                      ? "text-gold-light"
+                      : "text-slate-500 hover:text-slate-300"
+                  }`}
                 >
                   <Icon size={18} className="shrink-0" />
-                  {!collapsed && <span className="truncate">{item.label}</span>}
-                </div>
-                <div className="space-y-0.5">
-                  {item.children.map((child) => {
-                    const active = pathname === child.href;
-                    return (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        title={collapsed ? child.label : undefined}
-                        className={`flex items-center gap-3 rounded-lg py-2 text-[13px] transition-colors relative
-                          ${collapsed ? "px-3 justify-center" : "pl-9 pr-3"}
-                          ${
-                            active
-                              ? "bg-gold/15 text-gold-light font-medium"
-                              : "text-slate-300 hover:bg-white/5 hover:text-white"
-                          }`}
-                      >
-                        {active && (
-                          <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-gold" />
-                        )}
-                        {collapsed ? (
-                          <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" />
-                        ) : (
-                          <span className="truncate">{child.label}</span>
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
+                  {!collapsed && (
+                    <>
+                      <span className="truncate flex-1 text-left">
+                        {item.label}
+                      </span>
+                      <ChevronDown
+                        size={14}
+                        className={`shrink-0 transition-transform ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </>
+                  )}
+                </button>
+                {isOpen && (
+                  <div className="space-y-0.5">
+                    {item.children.map((child) => {
+                      const active = pathname === child.href;
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          title={collapsed ? child.label : undefined}
+                          className={`flex items-center gap-3 rounded-lg py-2 text-[13px] transition-colors relative
+                            ${collapsed ? "px-3 justify-center" : "pl-9 pr-3"}
+                            ${
+                              active
+                                ? "bg-gold/15 text-gold-light font-medium"
+                                : "text-slate-300 hover:bg-white/5 hover:text-white"
+                            }`}
+                        >
+                          {active && (
+                            <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-gold" />
+                          )}
+                          {collapsed ? (
+                            <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" />
+                          ) : (
+                            <span className="truncate">{child.label}</span>
+                          )}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           }

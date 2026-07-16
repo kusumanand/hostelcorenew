@@ -190,23 +190,27 @@ export default function FeatureRecordsTable({
 
       {/* Toolbar */}
       <div className="card p-4 flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="flex items-center gap-2 min-w-0">
-          <Database size={15} className="text-gold-dark dark:text-gold shrink-0" />
-          {personal ? (
-            <ListChecks size={15}
-            className="text-gold-dark dark:text-gold shrink-0"/>
+      <div className="flex items-center gap-2 min-w-0">
+  {personal ? (
+    <ListChecks
+      size={15}
+      className="text-gold-dark dark:text-gold shrink-0"
+    />
+  ) : (
+    <Database
+      size={15}
+      className="text-gold-dark dark:text-gold shrink-0"
+    />
+  )}
 
-          ) : (
-            <Database size={15}
-            className="text-gold-dark dark:text-gold shrink-0"/>
-          )}
-          <h3 className="text-[13px] font-semibold text-slate-700 dark:text-slate-100 truncate">
-          {personal ? `My ${featureName}` : `${featureName} Records`}
-          </h3>
-          <span className="text-[11px] text-slate-400 shrink-0">
-            {filtered.length} of {records.length}
-          </span>
-        </div>
+  <h3 className="text-[13px] font-semibold text-slate-700 dark:text-slate-100 truncate">
+    {personal ? `My ${featureName}` : `${featureName} Records`}
+  </h3>
+
+  <span className="text-[11px] text-slate-400 shrink-0">
+    {filtered.length} of {records.length}
+  </span>
+</div>
         <div className="sm:ml-auto flex items-center gap-2 flex-wrap">
           <div className="relative">
             <Search
