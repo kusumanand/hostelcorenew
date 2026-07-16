@@ -1,22 +1,10 @@
 import { type Role } from "@/lib/roles";
 
-// Module-level access (roles.ts / MODULE_ACCESS) decides which *modules* a
-// role can enter. This file goes one level deeper: for roles listed here,
-// it restricts each module down to a specific whitelist of *features*
-// instead of exposing every feature inside that module.
-//
-// A role that has NO entry in FEATURE_ACCESS is unrestricted at the
-// feature level — once module access is granted, every feature inside
-// that module is visible (this preserves the existing behaviour for
-// super_admin, admin, hr, warden, accountant, mess_manager and parent).
-//
-// Keys are "moduleSlug::featureSlug" pairs (feature slug = slugify(name)
-// from module-features.tsx).
 
 export const FEATURE_ACCESS: Partial<Record<Role, string[]>> = {
   student: [
     // Admissions & KYC
-    "admissions::online-admission",
+    "admissions::payment-link",
     "admissions::online-payment",
     "admissions::document-upload",
     "admissions::kyc-verification",
@@ -50,10 +38,14 @@ export const FEATURE_ACCESS: Partial<Record<Role, string[]>> = {
 
     // Inventory & Assets
     "inventory::asset-booking",
+    "inventory::maintenance-scheduling",
 
     // Health & Wellness
     "health-wellness::medical-emergency-alerts",
-    "health-wellness::sos-alert",
+    "health-wellness::sos-alerts",
+    "health-wellness::health-checkup-records",
+    "health-wellness::vaccination-records",
+
 
     // Student Productivity
     "student-productivity::study-room-booking",
@@ -83,9 +75,7 @@ export function canAccessFeature(
   return allowed.includes(featureKey(moduleSlug, featureSlug));
 }
 
-// Returns the set of feature slugs (within one module) a restricted role
-// may see, or null if the role isn't feature-restricted (caller should
-// show every feature in that case).
+
 export function allowedFeatureSlugsForModule(
   role: Role,
   moduleSlug: string
